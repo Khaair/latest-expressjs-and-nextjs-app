@@ -17,6 +17,7 @@ export const updateUserSchema = z
     email: z.string().email('Invalid email address').toLowerCase().trim().optional(),
     firstName: z.string().trim().min(1).max(100).nullable().optional(),
     lastName: z.string().trim().min(1).max(100).nullable().optional(),
+    status: z.nativeEnum(UserStatus).optional(),
   })
   .strict();
 

@@ -1,11 +1,15 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { AdminShell } from "@/components/features/dashboard/admin-shell";
 import { AdminTopbar } from "@/components/features/dashboard/admin-sidebar";
 import { ROUTES } from "@/constants/routes";
 import { getCurrentUser } from "@/lib/api/auth";
+import { noIndexMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = noIndexMetadata;
 
 export default async function DashboardLayout({
   children,

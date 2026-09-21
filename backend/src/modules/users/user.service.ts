@@ -113,14 +113,16 @@ export async function updateUser(
   targetId: string,
   input: UpdateUserInput,
 ): Promise<SafeUser> {
-  assertOwnership(requesterId, targetId);
-
   const existing = await prisma.user.findFirst({
     where: { id: targetId, deletedAt: null },
   });
 
   if (!existing) {
     throw new NotFoundError('User not found');
+  }
+
+  if (input.status === UserStatus.INACTIVE && requesterId === targetId) {
+    throw new BadRequestError('You cannot deactivate your own account');
   }
 
   if (input.email && input.email !== existing.email) {
@@ -145,15 +147,21 @@ export async function updateUser(
       ...(input.email !== undefined && { email: input.email }),
       ...(input.firstName !== undefined && { firstName: input.firstName }),
       ...(input.lastName !== undefined && { lastName: input.lastName }),
+      ...(input.status !== undefined && { status: input.status }),
     },
   });
+
+  if (input.status === UserStatus.INACTIVE) {
+    await prisma.refreshToken.updateMany({
+      where: { userId: targetId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+  }
 
   return toSafeUser(user);
 }
 
-export async function deleteUser(requesterId: string, targetId: string): Promise<void> {
-  assertOwnership(requesterId, targetId);
-
+export async function deleteUser(_requesterId: string, targetId: string): Promise<void> {
   const existing = await prisma.user.findFirst({
     where: { id: targetId, deletedAt: null },
   });
@@ -182,8 +190,6 @@ export async function updateUserStatus(
   targetId: string,
   input: UpdateUserStatusInput,
 ): Promise<SafeUser> {
-  assertOwnership(requesterId, targetId);
-
   const existing = await prisma.user.findFirst({
     where: { id: targetId, deletedAt: null },
   });

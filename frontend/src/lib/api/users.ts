@@ -1,6 +1,11 @@
 import "server-only";
 
-import type { BackendUsersData } from "@/types/api-contract";
+import type {
+  BackendAuthData,
+  BackendCreateUserBody,
+  BackendUpdateUserBody,
+  BackendUsersData,
+} from "@/types/api-contract";
 import type { UserListItem } from "@/types/user";
 
 import { apiClient } from "./client";
@@ -14,6 +19,8 @@ function mapUserListItem(user: BackendUsersData["users"][number]): UserListItem 
     id: user.id,
     email: user.email,
     name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     status: user.status,
     createdAt: user.createdAt,
   };
@@ -42,4 +49,28 @@ export async function getUsersFromApi(options: {
     pageSize: result.pagination.limit,
     totalPages: result.pagination.totalPages,
   };
+}
+
+export async function createUserWithApi(input: BackendCreateUserBody) {
+  const { user } = await apiClient<BackendAuthData>("/users", {
+    method: "POST",
+    body: input,
+  });
+
+  return mapUserListItem(user);
+}
+
+export async function updateUserWithApi(id: string, input: BackendUpdateUserBody) {
+  const { user } = await apiClient<BackendAuthData>(`/users/${id}`, {
+    method: "PATCH",
+    body: input,
+  });
+
+  return mapUserListItem(user);
+}
+
+export async function deleteUserWithApi(id: string) {
+  await apiClient(`/users/${id}`, {
+    method: "DELETE",
+  });
 }

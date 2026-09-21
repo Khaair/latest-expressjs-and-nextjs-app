@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { UserRowActions } from "@/components/features/users/user-row-actions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { UserListItem } from "@/types/user";
@@ -38,9 +39,9 @@ export function UserTable({ users, page, totalPages, total, search }: UserTableP
           type="search"
           defaultValue={search}
           placeholder="Search by name or email..."
-          className="flex h-10 flex-1 rounded-lg border border-border bg-surface px-3 text-sm text-text-primary shadow-sm placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-ring/20"
+          className="flex h-9 w-full max-w-sm flex-1 rounded-lg border border-border bg-surface px-3 text-sm text-text-primary shadow-sm placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-ring/20"
         />
-        <Button type="submit" className="sm:w-auto">
+        <Button type="submit" size="sm" className="sm:w-auto">
           Search
         </Button>
       </form>
@@ -54,7 +55,7 @@ export function UserTable({ users, page, totalPages, total, search }: UserTableP
 
       <div className="overflow-hidden rounded-xl border border-border bg-surface-raised shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-sm">
+          <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
               <tr className="border-b border-border bg-surface-muted">
                 <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
@@ -69,12 +70,15 @@ export function UserTable({ users, page, totalPages, total, search }: UserTableP
                 <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
                   Joined
                 </th>
+                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-text-muted">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border-subtle">
               {users.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-12 text-center text-text-muted">
+                  <td colSpan={5} className="px-4 py-12 text-center text-text-muted">
                     No users found
                   </td>
                 </tr>
@@ -90,6 +94,9 @@ export function UserTable({ users, page, totalPages, total, search }: UserTableP
                       <Badge variant={statusVariant(user.status)}>{user.status}</Badge>
                     </td>
                     <td className="px-4 py-3.5 text-text-muted">{formatDate(user.createdAt)}</td>
+                    <td className="px-4 py-3.5">
+                      <UserRowActions user={user} />
+                    </td>
                   </tr>
                 ))
               )}

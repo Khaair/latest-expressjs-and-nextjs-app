@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { PageHeader } from "@/components/features/dashboard/page-header";
+import { CreateUserModal } from "@/components/features/users/create-user-modal";
 import { UserTable } from "@/components/features/users/user-table";
 import { ROUTES } from "@/constants/routes";
 import { getApiErrorMessage } from "@/lib/api/errors";
@@ -34,29 +35,36 @@ async function UsersContent({
     pageSize: searchParams.pageSize,
   });
 
+  let result: Awaited<ReturnType<typeof getUsersFromApi>> | null = null;
+  let loadError: string | null = null;
+
   try {
-    const result = await getUsersFromApi({
+    result = await getUsersFromApi({
       search: parsed.q,
       page: parsed.page,
       pageSize: parsed.pageSize,
     });
-
-    return (
-      <UserTable
-        users={result.data}
-        page={result.page}
-        totalPages={result.totalPages}
-        total={result.total}
-        search={parsed.q}
-      />
-    );
   } catch (error) {
+    loadError = getApiErrorMessage(error);
+  }
+
+  if (loadError || !result) {
     return (
       <div className="rounded-xl border border-danger/30 bg-danger-muted p-4 text-sm text-danger">
-        Failed to load users: {getApiErrorMessage(error)}
+        Failed to load users: {loadError ?? "Unknown error"}
       </div>
     );
   }
+
+  return (
+    <UserTable
+      users={result.data}
+      page={result.page}
+      totalPages={result.totalPages}
+      total={result.total}
+      search={parsed.q}
+    />
+  );
 }
 
 export default async function UsersPage({ searchParams }: UsersPageProps) {
@@ -67,7 +75,9 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
       <PageHeader
         title="Users"
         description="Browse and search all registered users from the backend API."
-      />
+      >
+        <CreateUserModal />
+      </PageHeader>
 
       <Suspense
         fallback={

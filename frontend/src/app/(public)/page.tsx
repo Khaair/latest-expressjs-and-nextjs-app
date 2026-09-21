@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,26 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { ROUTES } from "@/constants/routes";
 import { siteConfig } from "@/config/site";
 import { getCurrentUser } from "@/lib/api/auth";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: `${siteConfig.name} — Premium admin platform`,
+  },
+  description: siteConfig.description,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: `${siteConfig.name} — Premium admin platform`,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    type: "website",
+  },
+  twitter: {
+    title: `${siteConfig.name} — Premium admin platform`,
+    description: siteConfig.description,
+  },
+};
 
 const features = [
   {
@@ -38,11 +59,49 @@ const features = [
   },
 ];
 
+function JsonLd() {
+  const data = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: siteConfig.name,
+        url: siteConfig.url,
+        description: siteConfig.description,
+        inLanguage: "en",
+      },
+      {
+        "@type": "Organization",
+        name: siteConfig.name,
+        url: siteConfig.url,
+        description: siteConfig.description,
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: siteConfig.name,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        description: siteConfig.description,
+        url: siteConfig.url,
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 export default async function HomePage() {
   const user = await getCurrentUser();
 
   return (
     <div className="relative overflow-hidden">
+      <JsonLd />
+
       {/* Hero background */}
       <div
         aria-hidden

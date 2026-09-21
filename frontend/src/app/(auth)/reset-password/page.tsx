@@ -3,10 +3,14 @@ import { redirect } from "next/navigation";
 
 import { ResetPasswordForm } from "@/components/features/auth/reset-password-form";
 import { ROUTES } from "@/constants/routes";
+import { siteConfig } from "@/config/site";
 import { getCurrentUser } from "@/lib/api/auth";
+import { noIndexMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Reset password",
+  description: `Choose a new password for your ${siteConfig.name} account.`,
+  ...noIndexMetadata,
 };
 
 interface ResetPasswordPageProps {

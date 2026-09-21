@@ -10,6 +10,8 @@ export interface UserListItem {
   id: string;
   email: string;
   name: string;
+  firstName: string | null;
+  lastName: string | null;
   status: "ACTIVE" | "INACTIVE" | "PENDING";
   createdAt: string;
 }

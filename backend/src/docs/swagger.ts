@@ -268,6 +268,56 @@ const options: swaggerJsdoc.Options = {
           responses: { 200: { description: 'Status updated' } },
         },
       },
+      '/api/v1/categories': {
+        get: {
+          tags: ['Categories'],
+          summary: 'List categories',
+          security: [{ cookieAuth: [] }, { bearerAuth: [] }],
+          parameters: [
+            { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+            { name: 'limit', in: 'query', schema: { type: 'integer', default: 10 } },
+            { name: 'search', in: 'query', schema: { type: 'string' } },
+            { name: 'sortBy', in: 'query', schema: { type: 'string' } },
+            { name: 'sortOrder', in: 'query', schema: { type: 'string', enum: ['asc', 'desc'] } },
+          ],
+          responses: { 200: { description: 'Paginated category list' } },
+        },
+        post: {
+          tags: ['Categories'],
+          summary: 'Create category',
+          security: [{ cookieAuth: [] }, { bearerAuth: [] }],
+          responses: { 201: { description: 'Category created' } },
+        },
+      },
+      '/api/v1/categories/{id}': {
+        get: {
+          tags: ['Categories'],
+          summary: 'Get category by ID',
+          security: [{ cookieAuth: [] }, { bearerAuth: [] }],
+          parameters: [
+            { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+          ],
+          responses: { 200: { description: 'Category details' } },
+        },
+        patch: {
+          tags: ['Categories'],
+          summary: 'Update category',
+          security: [{ cookieAuth: [] }, { bearerAuth: [] }],
+          parameters: [
+            { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+          ],
+          responses: { 200: { description: 'Category updated' } },
+        },
+        delete: {
+          tags: ['Categories'],
+          summary: 'Soft delete category',
+          security: [{ cookieAuth: [] }, { bearerAuth: [] }],
+          parameters: [
+            { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+          ],
+          responses: { 200: { description: 'Category deleted' } },
+        },
+      },
     },
   },
   apis: ['./src/modules/**/*.ts', './src/routes.ts'],

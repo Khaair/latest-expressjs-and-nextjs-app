@@ -4,10 +4,15 @@ import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/features/auth/login-form";
 import { FormAlert } from "@/components/features/auth/auth-layout-parts";
 import { ROUTES } from "@/constants/routes";
+import { siteConfig } from "@/config/site";
 import { getCurrentUser } from "@/lib/api/auth";
+import { noIndexMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Sign in",
+  description: `Sign in to your ${siteConfig.name} account to access the admin dashboard.`,
+  alternates: { canonical: "/login" },
+  ...noIndexMetadata,
 };
 
 interface LoginPageProps {

@@ -6,7 +6,9 @@ export const ROUTES = {
   resetPassword: "/reset-password",
   dashboard: "/dashboard",
   users: "/dashboard/users",
+  categories: "/dashboard/categories",
   settings: "/dashboard/settings",
+  blogs: "/dashboard/blogs",
 } as const;
 
 export const PUBLIC_ROUTES = [
@@ -27,5 +29,7 @@ export const AUTH_ROUTES = [
 export const PROTECTED_ROUTES = [
   ROUTES.dashboard,
   ROUTES.users,
+  ROUTES.categories,
   ROUTES.settings,
+  ROUTES.blogs,
 ] as const;
